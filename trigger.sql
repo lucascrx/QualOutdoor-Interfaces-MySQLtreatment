@@ -7,7 +7,7 @@ BEGIN
 	/*On récupère le nom de la table à transformer en arbre*/
 	DECLARE table_upload VARCHAR(100) DEFAULT table_name;
 	/* on se sert de ce nom pour generer le nom de la future table contennant l'arbre associé*/
-	DECLARE table_tree VARCHAR(100) DEFAULT CONCAT( 'TABLE_TREE_' , table_upload );/* @table_upload);*/
+	DECLARE table_tree VARCHAR(100) DEFAULT CONCAT( 'tree_' , table_upload );/* @table_upload);*/
 	
 	/*déclaration des variables qui recupèrent les champs transmis par le curseur
 	Ce sont des variables systemes necessaires pour recuperer les champs du curseur*/
@@ -91,8 +91,8 @@ BEGIN
 			SET @larg_temp = 1;
 			/*si on lit une feuille : on l'insert dans la table de data*/
 			IF curs_lvl = 7 THEN
-				/*PREPARE stm2 FROM 'INSERT INTO table_data ( DATE , LAT , LNG , DAT) VALUES ( @curs_ref_temp , @curs_lat_temp , @curs_lng_temp , @curs_data_temp )';
-				EXECUTE stm2;*/
+				PREPARE stm2 FROM 'INSERT INTO table_data ( DATE , LAT , LNG , DAT) VALUES ( @curs_ref_temp , @curs_lat_temp , @curs_lng_temp , @curs_data_temp )';
+				EXECUTE stm2;
 				/*on récupère l'ID d'insertion pour mettre a jour curs_ref*/
 				PREPARE stm2 FROM 'SET @curs_ref_temp = LAST_INSERT_ID()';
 				EXECUTE stm2;
@@ -179,7 +179,13 @@ BEGIN
 	PREPARE stm14 FROM 'DROP TABLE bords_droits_temp';
 	EXECUTE stm14;
 	DEALLOCATE PREPARE stm14;
-
+	
+	/*Une fois l'arbre généré on peut supprimer la premiere table:*/
+	SET @str15 = CONCAT('DROP TABLE ' , table_upload ); 
+	PREPARE stm15 FROM @str15;
+	EXECUTE stm15;
+	DEALLOCATE PREPARE stm15;
+	
 END
 	
 			
