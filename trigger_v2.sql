@@ -104,7 +104,7 @@ BEGIN
 				EXECUTE stm7;
 				DEALLOCATE PREPARE stm7;
 			ELSE /*sinon il s'agit d'un frere ou d'un oncle de la ligne précédente
-				/*on regarde donc la table reference temp ou se trouve forcement un 
+				on regarde donc la table reference temp ou se trouve forcement un 
 				frère du noeud correspondant à la ligne courante */
 				PREPARE stm8 FROM 'SELECT reference INTO @brother_ref FROM reference_temp WHERE lvl = @curs_lvl_temp'; 
 				EXECUTE stm8;
